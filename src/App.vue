@@ -3,6 +3,7 @@ import { ref } from 'vue'
 
 const materialCode = ref('200330')
 const batchNumber = ref('C26B01')
+
 const xlsxFile = ref('')
 const jsonFile = ref('')
 const pdfFile = ref('')
@@ -34,6 +35,7 @@ const pdfFile = ref('')
     </el-card>
 
     <!-- uploads block -->
+    <!-- 地块信息EXCEL还没传 -->
     <el-card class="card-background">
       <template #header>
         <div class="card-header">
@@ -43,7 +45,7 @@ const pdfFile = ref('')
 
       <!-- xlsx file upload block -->
       <div>
-        <el-upload v-model="xlsxFile" class="upload-demo" drag
+        <el-upload ref="xlsxFile" :auto-upload="false" class="upload-demo" drag
           action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15">
           <div class="el-icon--upload">📊</div>
           <div class="el-upload__text">拖入EXCEL文件或 <em style="color: #40a9ff;">拖入EXCEL文件或</em></div>
@@ -56,7 +58,7 @@ const pdfFile = ref('')
 
       <!-- json file upload block -->
       <div>
-        <el-upload v-model="jsonFile" class="upload-demo" drag
+        <el-upload ref="jsonFile" :auto-upload="false" class="upload-demo" drag
           action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15">
           <div class="el-icon--upload">📄</div>
           <div class="el-upload__text">拖入JSON文件或 <em style="color: #40a9ff;">拖入JSON文件或</em></div>
@@ -69,7 +71,7 @@ const pdfFile = ref('')
 
       <!-- xlsx pdf upload block -->
       <div>
-        <el-upload v-model="pdfFile" class="upload-demo" drag
+        <el-upload ref="pdfFile" :auto-upload="false" class="upload-demo" drag
           action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15">
           <div class="el-icon--upload">📑</div>
           <div class="el-upload__text">拖入PDF文件或 <em style="color: #40a9ff;">拖入PDF文件或</em></div>
@@ -84,16 +86,10 @@ const pdfFile = ref('')
 
     <!-- action buttons -->
     <el-card class="card-background">
-      <div style="display: flex !important; flex-direction: row !important; gap: 15px">
-        <div style="display: flex; flex-direction: row; gap: 10px; align-items: center !important;">
-          <label for="materialCode"><em style="color: red !important;">* </em>物料编码:</label>
-          <el-input v-model="materialCode" style="width: 240px" placeholder="请输入物料编码" />
-        </div>
-
-        <div style="display: flex; flex-direction: row; gap: 10px; align-items: center !important;">
-          <label for="batchNumber"><em style="color: red !important;">* </em>天然胶批次:</label>
-          <el-input v-model="batchNumber" style="width: 240px" placeholder="请输入批次号" />
-        </div>
+      <div
+        style="display: flex !important; flex-direction: row !important; gap: 5px; justify-content: center !important;">
+        <el-button>重置</el-button>
+        <el-button type="primary">提交上传</el-button>
       </div>
     </el-card>
 
