@@ -11,7 +11,7 @@ const pdfFile = ref('')
 </script>
 
 <template>
-  <div style="display: flex; flex-direction: column; margin: 15px; gap: 10px">
+  <div style="display: flex; flex-direction: column; margin: 15px; gap: 10px;">
 
     <!-- main buttons -->
     <el-card class="card-background">
@@ -46,7 +46,7 @@ const pdfFile = ref('')
       <!-- xlsx file upload block -->
       <div>
         <el-upload ref="xlsxFile" :auto-upload="false" class="upload-demo" drag
-          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15">
+          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" accept=".xlsx/.xls">
           <div class="el-icon--upload">📊</div>
           <div class="el-upload__text">拖入EXCEL文件或 <em style="color: #40a9ff;">拖入EXCEL文件或</em></div>
           <template #tip>
@@ -59,7 +59,7 @@ const pdfFile = ref('')
       <!-- json file upload block -->
       <div>
         <el-upload ref="jsonFile" :auto-upload="false" class="upload-demo" drag
-          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15">
+          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" accept=".json">
           <div class="el-icon--upload">📄</div>
           <div class="el-upload__text">拖入JSON文件或 <em style="color: #40a9ff;">拖入JSON文件或</em></div>
           <template #tip>
@@ -72,7 +72,7 @@ const pdfFile = ref('')
       <!-- xlsx pdf upload block -->
       <div>
         <el-upload ref="pdfFile" :auto-upload="false" class="upload-demo" drag
-          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15">
+          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" accept=".pdf">
           <div class="el-icon--upload">📑</div>
           <div class="el-upload__text">拖入PDF文件或 <em style="color: #40a9ff;">拖入PDF文件或</em></div>
           <template #tip>
