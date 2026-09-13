@@ -1,7 +1,10 @@
 <script setup>
-import { ref, onBeforeUpdate, reactive } from 'vue'
+import { ref, onBeforeUpdate, reactive, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus';
 import FileUploader from './components/FileUploader.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t, locale } = useI18n();
 
 const BASE_URL = import.meta.env.VITE_API_URL
 const get = ref('api/v1/mes/order/getData')
@@ -16,6 +19,21 @@ const filesUploaded = reactive({
   json: null,
   pdf: null
 })
+
+const languese = [
+  {
+    value: 'cn',
+    label: '中文',
+  },
+  {
+    value: 'en',
+    label: 'English',
+  },
+  {
+    value: 'kh',
+    label: 'ភាសាខ្មែរ',
+  },
+]
 
 const handleGetLandParcelList = async () => {
 
@@ -141,30 +159,41 @@ const handleFileUploadChange = (type, payload) => {
 
   console.log(JSON.stringify(filesUploaded));
 }
-
 </script>
 
 <template>
   <div style="display: flex; flex-direction: column; margin: 15px; gap: 10px;">
 
     <!-- main buttons -->
-    <el-card class="card-background">
-      <el-button @click="handleGetLandParcelList" class="text-color"
-        style="background-color: #40a9ff">📋地块列表</el-button>
-      <el-button @click="handleRefresh" class="text-color" style="background-color: #73d13d">🔄刷新</el-button>
+    <el-card>
+      <div style="display: flex; justify-content: space-between;">
+        <div class="card-background">
+          <el-button @click="handleGetLandParcelList" class="text-color" style="background-color: #40a9ff">📋{{
+            $t('message.loadData') }}</el-button>
+          <el-button @click="handleRefresh" class="text-color" style="background-color: #73d13d">🔄{{
+            $t('message.refresh')
+          }}</el-button>
+        </div>
+
+        <el-select v-model="locale" placeholder="Languese" style="width: 100px" @change="switchLang">
+          <el-option v-for="item in languese" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
+      </div>
     </el-card>
 
     <!-- input fields blocks -->
     <el-card class="card-background">
       <div style="display: flex !important; flex-wrap: wrap; flex-direction: row !important; gap: 15px">
         <div style="display: flex; flex-wrap: wrap; flex-direction: row; gap: 10px; align-items: center !important;">
-          <label for="materialCode"><em style="color: red !important;">* </em>物料编码:</label>
-          <el-input v-model="materialCode" style="width: 240px;" placeholder="请输入物料编码" />
+          <label for="materialCode"><em style="color: red !important;">* </em>{{ $t('message.materialCode') }}:</label>
+          <el-input v-model="materialCode" style="width: 240px;"
+            placeholder="{{ $t('message.materCodePlaceholder') }}" />
         </div>
 
         <div style="display: flex; flex-wrap: wrap; flex-direction: row; gap: 10px; align-items: center !important;">
-          <label for="batchNumber"><em style="color: red !important;">* </em>天然胶批次:</label>
-          <el-input v-model="batchNumber" style="width: 240px" placeholder="请输入批次号" />
+          <label for="batchNumber"><em style="color: red !important;">* </em>{{ $t('message.rubberBatch') }}:</label>
+          <el-input v-model="batchNumber" style="width: 240px"
+            placeholder="{{ $t('message.rubberBatchPlaceholder') }}" />
         </div>
       </div>
     </el-card>
@@ -173,24 +202,24 @@ const handleFileUploadChange = (type, payload) => {
     <el-card class="card-background">
       <template #header>
         <div class="card-header">
-          <span style="font-weight: bold">文件上传</span>
+          <span style="font-weight: bold">{{ $t('message.fileUpload') }}</span>
         </div>
       </template>
 
       <!-- excel accept files-->
       <FileUploader :ref="setUploaderRef" @upload-success="(data) => handleFileUploadChange('excel', data)"
-        @file-deleted="() => handleFileUploadChange('excel', null)" label-text="地块信息EXCEL" format-text="EXCEL"
-        allowed-extensions=".xlsx,.xls" allowed-types-text=".xlsx / .xls" />
+        @file-deleted="() => handleFileUploadChange('excel', null)" :label-text="$t('message.excelTextLabel')"
+        format-text="EXCEL" allowed-extensions=".xlsx,.xls" allowed-types-text=".xlsx / .xls" />
 
       <!-- json accept file-->
       <FileUploader :ref="setUploaderRef" @upload-success="(data) => handleFileUploadChange('json', data)"
-        @file-deleted="() => handleFileUploadChange('json', null)" label-text="地块信息JSON还没传" format-text="JSON"
-        allowed-extensions=".json" allowed-types-text=".json" :max-size-m-b="5" />
+        @file-deleted="() => handleFileUploadChange('json', null)" :label-text="$t('message.jsonTextLabel')"
+        format-text="JSON" allowed-extensions=".json" allowed-types-text=".json" :max-size-m-b="5" />
 
       <!-- pdf accept file -->
       <FileUploader :ref="setUploaderRef" @upload-success="(data) => handleFileUploadChange('pdf', data)"
-        @file-deleted="() => handleFileUploadChange('pdf', null)" label-text="尽职声明PDF未上传" format-text="PDF"
-        allowed-extensions=".pdf" allowed-types-text=".pdf" :max-size-m-b="20" />
+        @file-deleted="() => handleFileUploadChange('pdf', null)" :label-text="$t('message.pdfTextLable')"
+        format-text="PDF" allowed-extensions=".pdf" allowed-types-text=".pdf" :max-size-m-b="20" />
     </el-card>
 
     <!-- action buttons -->

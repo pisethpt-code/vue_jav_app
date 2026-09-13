@@ -1,6 +1,9 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n;
 
 const props = defineProps({
     labelText: { type: String, default: '地块信息EXCEL' },
@@ -126,7 +129,7 @@ defineExpose({
     <div class="custom-upload-container">
         <div v-if="uploadStatus === 'idle'" class="upload-card idle-state">
             <div class="status-header text-red">
-                <span class="dot red-dot"></span> {{ labelText }}还没传
+                <span class="dot red-dot"></span> {{ labelText }}{{ $t('message.fileTextLabelHasnt') }}
             </div>
 
             <el-upload ref="uploadRef" class="drag-uploader" drag action="#" :auto-upload="true" :show-file-list="false"
