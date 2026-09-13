@@ -4,8 +4,8 @@ import { ElMessage, ElMessageBox } from 'element-plus';
 import FileUploader from './components/FileUploader.vue';
 
 const BASE_URL = import.meta.env.VITE_API_URL
-const endpoint_loadLandPercel = ref('api/v1/mes/order/getData')
-const endpoint_upload = ref('api/v1/mes/order/fileUpload')
+const get = ref('api/v1/mes/order/getData')
+const upload = ref('api/v1/mes/order/fileUpload')
 
 const materialCode = ref('200330')
 const batchNumber = ref('C26B01')
@@ -82,7 +82,7 @@ const handleSubmit = async () => {
 
     console.log(JSON.stringify(option));
 
-    // const response = await fetch(BASE_URL + endpoint_upload, option);
+    // const response = await fetch(BASE_URL + upload, option);
     // if (!response.ok) {
     //   throw new Error(`${response.status}`)
     // }
