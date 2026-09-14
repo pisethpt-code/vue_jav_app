@@ -3,6 +3,7 @@ import { ref, onBeforeUpdate, reactive, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus';
 import FileUploader from './components/FileUploader.vue';
 import { useI18n } from 'vue-i18n';
+import { switchLang } from './i18n/index.js';
 
 const { t, locale } = useI18n();
 
@@ -35,10 +36,14 @@ const languese = [
   },
 ]
 
+const handleSwitchLang = async (lang) => {
+  await switchLang(lang)
+}
+
 const handleGetLandParcelList = async () => {
 
   ElMessage({
-    message: '打开地块列表',
+    message: t('message.onpenPlotListMessage'),
     type: 'primary',
     icon: ''
   })
@@ -58,24 +63,24 @@ const handleGetLandParcelList = async () => {
 }
 
 const handleRefresh = () => {
-  ElMessage.primary('页面已刷新')
+  ElMessage.primary(t('message.refreshPageMessage'))
 
   // window.location.reload()
 }
 
 const handleSubmit = async () => {
   if (!materialCode.value || materialCode.value === null || materialCode.value.trim() === '') {
-    ElMessage.error('物料编码不能为空')
+    ElMessage.error(t('message.materialCodeEmptyMessage'))
     return
   }
 
   if (batchNumber.value === null || batchNumber.value.trim() === '') {
-    ElMessage.error('天然胶批次不能为空')
+    ElMessage.error(t('message.rubberBatchEmptyMessage'))
     return
   }
 
   if (filesUploaded.excel === null && filesUploaded.json === null && filesUploaded.pdf === null) {
-    ElMessage.error('请上传以下文件：EXCEL、JSON、PDF')
+    ElMessage.error(t('message.allowDocFileMessage') + 'EXCEL、JSON、PDF')
     return
   }
 
@@ -107,7 +112,7 @@ const handleSubmit = async () => {
 
     // const data = await response.json();
 
-    ElMessage.success('成功')
+    ElMessage.success(t('message.successMessage'))
   } catch (error) {
     ElMessage.error(error)
     console.error(error)
@@ -116,11 +121,11 @@ const handleSubmit = async () => {
 
 const handleResetAll = () => {
   ElMessageBox.confirm(
-    '确定要重置所有内容吗？已上传的文件将被清除。',
+    t('message.alertComfirmResetMessage'),
     {
       distinguishCancelAndClose: true,
-      confirmButtonText: '是的',
-      cancelButtonText: '取消',
+      confirmButtonText: t('message.yes'),
+      cancelButtonText: t('message.cancel'),
     }
   )
     .then(() => {
@@ -137,7 +142,7 @@ const handleResetAll = () => {
 
       ElMessage({
         type: 'primary',
-        message: '已重置',
+        message: t('message.reseted'),
       })
     })
     .catch((action) => {
@@ -172,10 +177,10 @@ const handleFileUploadChange = (type, payload) => {
             $t('message.loadData') }}</el-button>
           <el-button @click="handleRefresh" class="text-color" style="background-color: #73d13d">🔄{{
             $t('message.refresh')
-          }}</el-button>
+            }}</el-button>
         </div>
 
-        <el-select v-model="locale" placeholder="Languese" style="width: 100px" @change="switchLang">
+        <el-select v-model="locale" placeholder="Languese" style="width: 100px" @change="handleSwitchLang($event)">
           <el-option v-for="item in languese" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </div>
@@ -186,14 +191,12 @@ const handleFileUploadChange = (type, payload) => {
       <div style="display: flex !important; flex-wrap: wrap; flex-direction: row !important; gap: 15px">
         <div style="display: flex; flex-wrap: wrap; flex-direction: row; gap: 10px; align-items: center !important;">
           <label for="materialCode"><em style="color: red !important;">* </em>{{ $t('message.materialCode') }}:</label>
-          <el-input v-model="materialCode" style="width: 240px;"
-            placeholder="{{ $t('message.materCodePlaceholder') }}" />
+          <el-input v-model="materialCode" style="width: 240px;" :placeholder="$t('message.materCodePlaceholder')" />
         </div>
 
         <div style="display: flex; flex-wrap: wrap; flex-direction: row; gap: 10px; align-items: center !important;">
           <label for="batchNumber"><em style="color: red !important;">* </em>{{ $t('message.rubberBatch') }}:</label>
-          <el-input v-model="batchNumber" style="width: 240px"
-            placeholder="{{ $t('message.rubberBatchPlaceholder') }}" />
+          <el-input v-model="batchNumber" style="width: 240px" :placeholder="$t('message.rubberBatchPlaceholder')" />
         </div>
       </div>
     </el-card>
@@ -209,25 +212,30 @@ const handleFileUploadChange = (type, payload) => {
       <!-- excel accept files-->
       <FileUploader :ref="setUploaderRef" @upload-success="(data) => handleFileUploadChange('excel', data)"
         @file-deleted="() => handleFileUploadChange('excel', null)" :label-text="$t('message.excelTextLabel')"
-        format-text="EXCEL" allowed-extensions=".xlsx,.xls" allowed-types-text=".xlsx / .xls" />
+        format-text="EXCEL" allowed-extensions=".xlsx,.xls" allowed-types-text=".xlsx / .xls"
+        :material-code="materialCode" :batch-number="batchNumber" />
 
       <!-- json accept file-->
-      <FileUploader :ref="setUploaderRef" @upload-success="(data) => handleFileUploadChange('json', data)"
+      <FileUploader class="margin-top" :ref="setUploaderRef"
+        @upload-success="(data) => handleFileUploadChange('json', data)"
         @file-deleted="() => handleFileUploadChange('json', null)" :label-text="$t('message.jsonTextLabel')"
-        format-text="JSON" allowed-extensions=".json" allowed-types-text=".json" :max-size-m-b="5" />
+        format-text="JSON" allowed-extensions=".json" allowed-types-text=".json" :max-size-m-b="5"
+        :material-code="materialCode" :batch-number="batchNumber" />
 
       <!-- pdf accept file -->
-      <FileUploader :ref="setUploaderRef" @upload-success="(data) => handleFileUploadChange('pdf', data)"
+      <FileUploader class="margin-top" :ref="setUploaderRef"
+        @upload-success="(data) => handleFileUploadChange('pdf', data)"
         @file-deleted="() => handleFileUploadChange('pdf', null)" :label-text="$t('message.pdfTextLable')"
-        format-text="PDF" allowed-extensions=".pdf" allowed-types-text=".pdf" :max-size-m-b="20" />
+        format-text="PDF" allowed-extensions=".pdf" allowed-types-text=".pdf" :max-size-m-b="20"
+        :material-code="materialCode" :batch-number="batchNumber" />
     </el-card>
 
     <!-- action buttons -->
     <el-card class="card-background">
       <div
         style="display: flex !important; flex-direction: row !important; gap: 5px; justify-content: center !important;">
-        <el-button @click="handleResetAll">重置</el-button>
-        <el-button @click="handleSubmit" type="primary">提交上传</el-button>
+        <el-button @click="handleResetAll">{{ $t('message.reset') }}</el-button>
+        <el-button @click="handleSubmit" type="primary">{{ $t('message.submit') }}</el-button>
       </div>
     </el-card>
   </div>
@@ -240,5 +248,9 @@ const handleFileUploadChange = (type, payload) => {
 
 .card-background {
   background-color: white !important;
+}
+
+.margin-top {
+  margin-top: 18px;
 }
 </style>

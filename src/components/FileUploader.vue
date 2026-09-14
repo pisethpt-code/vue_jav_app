@@ -3,14 +3,22 @@ import { ref, reactive, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n;
+const { t } = useI18n();
 
 const props = defineProps({
     labelText: { type: String, default: '地块信息EXCEL' },
     formatText: { type: String, default: 'EXCEL' },
     allowedExtensions: { type: String, default: '.xlsx,.xls,.json,.pdf' },
     allowedTypesText: { type: String, default: '.xlsx / .xls / .json / .pdf' },
-    maxSizeMB: { type: Number, default: 10 }
+    maxSizeMB: { type: Number, default: 10 },
+    materialCode: {
+        type: String,
+        default: '',
+    },
+    batchNumber: {
+        type: String,
+        default: '',
+    }
 })
 
 const emit = defineEmits(['upload-success', 'file-deleted'])
@@ -64,12 +72,22 @@ const beforeUpload = (rawFile) => {
     const isValidFormat = validExts.includes(ext)
     const isLtMax = rawFile.size / 1024 / 1024 < props.maxSizeMB
 
+    if (props.materialCode === null || props.materialCode.trim() === '') {
+        ElMessage.error(t('message.materialCodeEmptyMessage'))
+        return false
+    }
+
+    if (props.batchNumber === null || props.batchNumber.trim() === '') {
+        ElMessage.error(t('message.rubberBatchEmptyMessage'))
+        return false
+    }
+
     if (!isValidFormat) {
-        ElMessage.error(`不支持该文件格式! 仅允许: ${props.allowedTypesText}`)
+        ElMessage.error(t('message.fileNotSupportMessage') + props.allowedTypesText)
         return false
     }
     if (!isLtMax) {
-        ElMessage.error(`文件大小不能超过 ${props.maxSizeMB} MB!`)
+        ElMessage.error(t('message.fileSizeNotExceedMessage') + ` ${props.maxSizeMB} MB!`)
         return false
     }
 
@@ -99,7 +117,7 @@ const customUpload = (options) => {
 
                 // console.log('file: ' + JSON.stringify(file) + ', fileinfo: ' + JSON.stringify(fileInfo));
                 ElMessage({
-                    message: `${fileInfo.extension.toUpperCase()}文件上传成功`,
+                    message: fileInfo.extension.toUpperCase() + t('message.fileUploadedSuccessMessage'),
                     type: 'success'
                 })
             }, 300)
@@ -110,7 +128,11 @@ const customUpload = (options) => {
 // Reset state
 const handleDelete = (isShowMessage = true) => {
     if (isShowMessage)
-        ElMessage.warning('已删除文件')
+        ElMessage({
+            message: t('message.deletedFileMessage'),
+            type: 'warning'
+        })
+
     uploadStatus.value = 'idle'
     uploadProgress.value = 0
     fileInfo.name = ''
@@ -129,24 +151,27 @@ defineExpose({
     <div class="custom-upload-container">
         <div v-if="uploadStatus === 'idle'" class="upload-card idle-state">
             <div class="status-header text-red">
-                <span class="dot red-dot"></span> {{ labelText }}{{ $t('message.fileTextLabelHasnt') }}
+                <span class="dot red-dot"></span> {{ labelText }} {{ $t('message.fileTextLabelHasnt') }}
             </div>
 
             <el-upload ref="uploadRef" class="drag-uploader" drag action="#" :auto-upload="true" :show-file-list="false"
                 :accept="allowedExtensions" :http-request="customUpload" :before-upload="beforeUpload">
                 <div class="icon-wrapper">{{ defaultIcon }}</div>
                 <div class="upload-text">
-                    拖入{{ formatText }}文件 或 <span class="blue-text text-blue-underline">点击上传{{ formatText }}文件</span>
+                    {{ $t('message.dragInTextLabel') }} {{ formatText }} {{ $t('message.fileOrTextLabel') }} <span
+                        class="blue-text text-blue-underline">{{ $t('message.clickToUpload') }} {{ formatText }} {{
+                            $t('message.documentTextLabel') }}</span>
                 </div>
                 <div class="upload-tip">
-                    支持 {{ allowedTypesText }} 格式，文件大小不超过 {{ maxSizeMB }} MB
+                    {{ $t('message.fileSupport') }} {{ allowedTypesText }} {{ $t('message.formatFileSize') }} {{
+                        maxSizeMB }} MB
                 </div>
             </el-upload>
         </div>
 
         <div v-else-if="uploadStatus === 'uploading'" class="upload-card uploading-state">
             <div class="status-header text-blue">
-                <span class="dot blue-dot"></span> 正在上传...
+                <span class="dot blue-dot"></span> {{ $t('message.uploading') }}
             </div>
 
             <div class="file-info-body">
@@ -154,7 +179,7 @@ defineExpose({
                     <span class="file-icon">{{ activeFileIcon }}</span>
                     <span class="file-name">{{ fileInfo.name }}</span>
                 </div>
-                <div class="file-meta">大小: {{ fileInfo.size }}</div>
+                <div class="file-meta">{{ $t('message.fileSize') }} {{ fileInfo.size }}</div>
 
                 <div class="progress-wrapper">
                     <el-progress :percentage="uploadProgress" :show-text="false" :stroke-width="8" color="#409eff" />
@@ -165,7 +190,7 @@ defineExpose({
 
         <div v-else-if="uploadStatus === 'success'" class="upload-card success-state">
             <div class="status-header text-green">
-                <span class="dot green-dot"></span> 上传成功
+                <span class="dot green-dot"></span> {{ $t('message.uploadStatus') }}
             </div>
 
             <div class="success-body">
@@ -175,21 +200,23 @@ defineExpose({
                         <span class="file-name">{{ fileInfo.name }}</span>
                     </div>
                     <div class="file-meta">
-                        大小: {{ fileInfo.size }} &nbsp;&nbsp;&nbsp;&nbsp; 上传时间: {{ fileInfo.uploadTime }}
+                        {{ $t('message.fileSize') }} {{ fileInfo.size }} &nbsp;&nbsp;&nbsp;&nbsp; {{
+                            $t('message.uploadTime') }} {{ fileInfo.uploadTime }}
                     </div>
                 </div>
 
                 <div class="right-actions">
                     <el-upload action="#" :show-file-list="false" :accept="allowedExtensions"
                         :http-request="customUpload" :before-upload="beforeUpload" style="display: inline-block;">
-                        <el-button size="small">重新上传</el-button>
+                        <el-button size="small">{{ $t('message.reUpload') }}</el-button>
                     </el-upload>
-                    <el-button size="small" @click="handleDelete" type="danger" plain>删除</el-button>
+                    <el-button size="small" @click="handleDelete" type="danger" plain>{{ $t('message.delete')
+                        }}</el-button>
                 </div>
             </div>
         </div>
 
-        <div class="bottom-label">上传{{ labelText }}文件</div>
+        <div class="bottom-label">{{ $t('message.upload') }} {{ labelText }} {{ $t('message.documentTextLabel') }}</div>
     </div>
 </template>
 
