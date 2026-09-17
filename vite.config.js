@@ -35,4 +35,13 @@ export default defineConfig({
   compilerOptions: {
     types: ['element-plus/global'],
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 })

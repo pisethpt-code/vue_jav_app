@@ -2,8 +2,10 @@
 import { ref, reactive, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
+import { useConfig } from '@/stores/config';
 
 const { t } = useI18n();
+const store = useConfig();
 
 const props = defineProps({
     labelText: { type: String, default: '地块信息EXCEL' },
@@ -95,7 +97,7 @@ const beforeUpload = (rawFile) => {
     return true
 }
 
-const customUpload = (options) => {
+const customUpload = async (options) => {
     const { file } = options
 
     uploadStatus.value = 'uploading'
@@ -103,26 +105,47 @@ const customUpload = (options) => {
     fileInfo.name = file.name
     fileInfo.size = formatSize(file.size)
 
-    const interval = setInterval(() => {
-        if (uploadProgress.value < 90) {
-            uploadProgress.value += 20
-        } else {
-            clearInterval(interval)
-            uploadProgress.value = 100
-            setTimeout(() => {
-                fileInfo.uploadTime = formatCurrentTime()
-                uploadStatus.value = 'success'
+    try {
+        const dataForm = {
+            materialCode: props.materialCode,
+            batchNumber: props.batchNumber,
+            file: file,
+        };
 
-                emit('upload-success', { file, fileInfo })
+        console.log('data form: ' + JSON.stringify(dataForm));
 
-                // console.log('file: ' + JSON.stringify(file) + ', fileinfo: ' + JSON.stringify(fileInfo));
-                ElMessage({
-                    message: fileInfo.extension.toUpperCase() + t('message.fileUploadedSuccessMessage'),
-                    type: 'success'
-                })
-            }, 300)
-        }
-    }, 150)
+        const data = await store.singleUploadFile(
+            props.materialCode,
+            props.batchNumber,
+            file
+        )
+        console.log('response: ' + data);
+
+        const interval = setInterval(() => {
+            if (uploadProgress.value < 90) {
+                uploadProgress.value += 20
+            } else {
+                clearInterval(interval)
+                uploadProgress.value = 100
+                setTimeout(() => {
+                    fileInfo.uploadTime = formatCurrentTime()
+                    uploadStatus.value = 'success'
+
+                    emit('upload-success', { file, fileInfo })
+
+                    // console.log('file: ' + JSON.stringify(file) + ', fileinfo: ' + JSON.stringify(fileInfo));
+                    ElMessage({
+                        message: fileInfo.extension.toUpperCase() + t('message.fileUploadedSuccessMessage'),
+                        type: 'success'
+                    })
+                }, 300)
+            }
+        }, 150)
+
+    } catch (error) {
+        console.error(error)
+        ElMessage.error(error);
+    }
 }
 
 // Reset state
@@ -211,7 +234,7 @@ defineExpose({
                         <el-button size="small">{{ $t('message.reUpload') }}</el-button>
                     </el-upload>
                     <el-button size="small" @click="handleDelete" type="danger" plain>{{ $t('message.delete')
-                        }}</el-button>
+                    }}</el-button>
                 </div>
             </div>
         </div>
