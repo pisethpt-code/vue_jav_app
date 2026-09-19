@@ -112,7 +112,7 @@ const customUpload = async (options) => {
             file: file,
         };
 
-        console.log('data form: ' + JSON.stringify(dataForm));
+        console.log('customUpload -> data form: ' + JSON.stringify(dataForm));
 
         const data = await store.singleUploadFile(
             props.materialCode,
@@ -120,6 +120,14 @@ const customUpload = async (options) => {
             file
         )
         console.log('response: ' + data);
+
+        const isNumeric = /^\d+$/.test(String(data).trim());
+        const rowCount = isNumeric ? parseInt(data, 10) : 0;
+
+        if (!isNumeric || rowCount <= 0) {
+            const errorMessage = !isNumeric ? data : t('message.fileUploadedFailedMessage');
+            throw new Error(errorMessage);
+        }
 
         const interval = setInterval(() => {
             if (uploadProgress.value < 90) {
@@ -133,9 +141,8 @@ const customUpload = async (options) => {
 
                     emit('upload-success', { file, fileInfo })
 
-                    // console.log('file: ' + JSON.stringify(file) + ', fileinfo: ' + JSON.stringify(fileInfo));
                     ElMessage({
-                        message: fileInfo.extension.toUpperCase() + t('message.fileUploadedSuccessMessage'),
+                        message: fileInfo.extension.toUpperCase() + ' ' + t('message.fileUploadedSuccessMessage'),
                         type: 'success'
                     })
                 }, 300)
@@ -144,7 +151,10 @@ const customUpload = async (options) => {
 
     } catch (error) {
         console.error(error)
-        ElMessage.error(error);
+        uploadStatus.value = 'exception'
+        uploadProgress.value = 0
+
+        ElMessage.error(error.message || String(error));
     }
 }
 
@@ -234,7 +244,7 @@ defineExpose({
                         <el-button size="small">{{ $t('message.reUpload') }}</el-button>
                     </el-upload>
                     <el-button size="small" @click="handleDelete" type="danger" plain>{{ $t('message.delete')
-                    }}</el-button>
+                        }}</el-button>
                 </div>
             </div>
         </div>

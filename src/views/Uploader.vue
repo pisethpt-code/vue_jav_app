@@ -9,10 +9,6 @@ import FileUploader from '@/components/FileUploader.vue';
 const { t, locale } = useI18n();
 const router = useRouter();
 
-const BASE_URL = import.meta.env.VITE_API_URL
-const get = ref('api/v1/mes/order/getData')
-const upload = ref('api/v1/mes/order/fileUpload')
-
 const materialCode = ref('200330')
 const batchNumber = ref('C26B01')
 
@@ -40,8 +36,6 @@ const languese = [
 
 const handleSwitchLang = async (lang) => {
     await switchLang(lang)
-
-    // console.log(BASE_URL + get);
 }
 
 const handleGetLandParcelList = async () => {
@@ -52,24 +46,11 @@ const handleGetLandParcelList = async () => {
     })
 
     router.push({
-        name: 'plot-list', params: {
+        name: 'list', state: {
             materialCode: materialCode.value,
             batchNumber: batchNumber.value
         }
     })
-
-    // try {
-    //   const response = await fetch(BASE_URL + endpoint_loadLandPercel);
-    //   if (!response.ok) {
-    //     throw new Error(`${(await response).status}`)
-    //   }
-
-    //   const data = await response.json();
-    //   ElMessage.success('成功')
-    // } catch (error) {
-    //   ElMessage.error(error)
-    //   console.error(error)
-    // }
 }
 
 const handleRefresh = () => {

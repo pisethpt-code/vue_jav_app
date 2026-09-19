@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Uploader from '@/views/Uploader.vue'
-import PlotList from '@/views/PlotList.vue'
+import List from '@/views/List.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,9 +11,9 @@ const router = createRouter({
       component: Uploader,
     },
     {
-      path: '/plotlist/:materialCode/:batchNumber',
-      name: 'plot-list',
-      component: PlotList,
+      path: '/list',
+      name: 'list',
+      component: List,
     },
   ],
 })

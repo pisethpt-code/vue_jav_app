@@ -3,7 +3,7 @@ import axios from 'axios'
 
 export const useConfig = defineStore('useConfig', {
   state: () => {
-    const BASE_URL = import.meta.env.VITE_API_BASE_URL
+    const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
     return {
       BASE_URL,
     }
@@ -11,23 +11,23 @@ export const useConfig = defineStore('useConfig', {
   getters: {},
   actions: {
     async getPlotList(materialCode, rubberBatch) {
-      const endpoint = `${this.BASE_URL}/api/v1/mes/order/list`
+      const endpoint = `${this.BASE_URL}/api/v1/mes/order/getPloitList`
+      console.log('materialCode -> ', materialCode)
       try {
         const response = await axios.get(endpoint, {
           params: {
-            materialCode: materialCode || null,
-            rubberBatch: rubberBatch || null,
+            materialNo: materialCode || '',
+            batchNo: rubberBatch || '',
           },
         })
 
         if (response.status !== 200) return response.statusText
-        return response.data
+        return response.data.data
       } catch (error) {
         console.error('getPlotList error:', error)
         throw error
       }
     },
-
     async singleUploadFile(materialCode, rubberBatch, rawFile) {
       try {
         if (!rawFile) {
@@ -42,6 +42,8 @@ export const useConfig = defineStore('useConfig', {
         console.log('form data: ' + JSON.stringify(formData))
 
         const endpoint = `${this.BASE_URL}/api/v1/mes/order/upload`
+
+        console.log('endpoint -> ', endpoint)
 
         const response = await axios.post(endpoint, formData, {
           params: {
@@ -58,6 +60,24 @@ export const useConfig = defineStore('useConfig', {
         console.error('singleUploadFile error:', error)
         throw error
       }
+    },
+    async downloadFile(fileName) {
+      const response = await axios.get(`${this.BASE_URL}/api/v1/mes/order/download/${fileName}`, {
+        responseType: 'blob',
+      })
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(new Blob([response.data]))
+      link.download = fileName
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    },
+    async viewPdfFile(fileName) {
+      const response = await axios.get(`${this.BASE_URL}/api/v1/mes/order/download/${fileName}`, {
+        responseType: 'blob',
+      })
+      const fileURL = URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }))
+      window.open(fileURL, '_blank')
     },
   },
 })
