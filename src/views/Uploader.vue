@@ -4,6 +4,10 @@ import { ElMessage, ElMessageBox } from 'element-plus';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import FileUploader from '@/components/FileUploader.vue';
+import {
+    List,
+    Refresh,
+} from '@element-plus/icons-vue'
 
 const { t } = useI18n();
 const router = useRouter();
@@ -123,11 +127,18 @@ const handleFileUploadChange = (type, payload) => {
         <el-card>
             <div style="display: flex; justify-content: space-between;">
                 <div class="card-background">
-                    <el-button @click="handleGetLandParcelList" class="text-color"
-                        style="background-color: #40a9ff">📋{{
+                    <el-button @click="handleGetLandParcelList" class="text-color" style="background-color: #40a9ff">
+                        <el-icon>
+                            <List />
+                        </el-icon>
+                        {{
                             $t('message.loadData') }}</el-button>
-                    <el-button @click="handleRefresh" class="text-color" style="background-color: #73d13d">🔄{{
-                        $t('message.refresh')
+                    <el-button @click="handleRefresh" class="text-color" style="background-color: #73d13d">
+                        <el-icon>
+                            <Refresh />
+                        </el-icon>
+                        {{
+                            $t('message.refresh')
                         }}</el-button>
                 </div>
             </div>
@@ -139,7 +150,7 @@ const handleFileUploadChange = (type, payload) => {
                 <div
                     style="display: flex; flex-wrap: wrap; flex-direction: row; gap: 10px; align-items: center !important;">
                     <label for="materialCode"><em style="color: red !important;">* </em>{{ $t('message.materialCode')
-                    }}:</label>
+                        }}:</label>
                     <el-input v-model="materialCode" style="width: 240px;"
                         :placeholder="$t('message.materCodePlaceholder')" />
                 </div>
@@ -147,7 +158,7 @@ const handleFileUploadChange = (type, payload) => {
                 <div
                     style="display: flex; flex-wrap: wrap; flex-direction: row; gap: 10px; align-items: center !important;">
                     <label for="batchNumber"><em style="color: red !important;">* </em>{{ $t('message.rubberBatch')
-                    }}:</label>
+                        }}:</label>
                     <el-input v-model="batchNumber" style="width: 240px"
                         :placeholder="$t('message.rubberBatchPlaceholder')" />
                 </div>
