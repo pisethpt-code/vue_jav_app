@@ -39,6 +39,11 @@
     "alertComfirmResetMessage": "确定要重置所有内容吗？已上传的文件将被清除。",
     "cancel": "取消",
     "yes": "是的",
-    "reseted": "已重置"
+    "reseted": "已重置",
+    "material": "物料",
+    "batch": "批次",
+    "createTime": "新增日期",
+    "operator": "操作",
+    "download": "下载"
   }
 }

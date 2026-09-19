@@ -2,11 +2,10 @@
 import { ref, onBeforeUpdate, reactive } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { useI18n } from 'vue-i18n';
-import { switchLang } from '@/i18n/index.js';
 import { useRouter } from 'vue-router';
 import FileUploader from '@/components/FileUploader.vue';
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const router = useRouter();
 
 const materialCode = ref('200330')
@@ -19,25 +18,6 @@ const filesUploaded = reactive({
     pdf: null
 })
 
-const languese = [
-    {
-        value: 'cn',
-        label: '中文',
-    },
-    {
-        value: 'en',
-        label: 'English',
-    },
-    {
-        value: 'kh',
-        label: 'ភាសាខ្មែរ',
-    },
-]
-
-const handleSwitchLang = async (lang) => {
-    await switchLang(lang)
-}
-
 const handleGetLandParcelList = async () => {
     ElMessage({
         message: t('message.onpenPlotListMessage'),
@@ -45,12 +25,12 @@ const handleGetLandParcelList = async () => {
         icon: ''
     })
 
-    router.push({
-        name: 'list', state: {
-            materialCode: materialCode.value,
-            batchNumber: batchNumber.value
-        }
-    })
+    const url = router.resolve({
+        name: 'list',
+        query: {},
+    });
+
+    window.open(url.href, '_blank');
 }
 
 const handleRefresh = () => {
@@ -81,27 +61,6 @@ const handleSubmit = async () => {
             jsonFile: filesUploaded.json?.file || null,
             pdfFile: filesUploaded.pdf?.file || null
         }
-
-        const option = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                materialCode: materialCode.value,
-                batchNumber: batchNumber.value,
-                filePayload: filePayloads
-            })
-        }
-
-        // console.log(JSON.stringify(option));
-
-        // const response = await fetch(BASE_URL + upload, option);
-        // if (!response.ok) {
-        //   throw new Error(`${response.status}`)
-        // }
-
-        // const data = await response.json();
 
         ElMessage.success(t('message.successMessage'))
     } catch (error) {
@@ -171,11 +130,6 @@ const handleFileUploadChange = (type, payload) => {
                         $t('message.refresh')
                         }}</el-button>
                 </div>
-
-                <el-select v-model="locale" placeholder="Languese" style="width: 100px"
-                    @change="handleSwitchLang($event)">
-                    <el-option v-for="item in languese" :key="item.value" :label="item.label" :value="item.value" />
-                </el-select>
             </div>
         </el-card>
 
@@ -185,7 +139,7 @@ const handleFileUploadChange = (type, payload) => {
                 <div
                     style="display: flex; flex-wrap: wrap; flex-direction: row; gap: 10px; align-items: center !important;">
                     <label for="materialCode"><em style="color: red !important;">* </em>{{ $t('message.materialCode')
-                        }}:</label>
+                    }}:</label>
                     <el-input v-model="materialCode" style="width: 240px;"
                         :placeholder="$t('message.materCodePlaceholder')" />
                 </div>
@@ -193,7 +147,7 @@ const handleFileUploadChange = (type, payload) => {
                 <div
                     style="display: flex; flex-wrap: wrap; flex-direction: row; gap: 10px; align-items: center !important;">
                     <label for="batchNumber"><em style="color: red !important;">* </em>{{ $t('message.rubberBatch')
-                        }}:</label>
+                    }}:</label>
                     <el-input v-model="batchNumber" style="width: 240px"
                         :placeholder="$t('message.rubberBatchPlaceholder')" />
                 </div>

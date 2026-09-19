@@ -27,7 +27,6 @@ const emit = defineEmits(['upload-success', 'file-deleted'])
 
 const uploadStatus = ref('idle')
 const uploadProgress = ref(0)
-const uploadRef = ref(null)
 
 const fileInfo = reactive({
     name: '',

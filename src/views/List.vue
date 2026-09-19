@@ -41,7 +41,7 @@ const handleViewPdf = async (fileName) => {
 
 onMounted(async () => {
     try {
-        const res = await store.getPlotList(materialCode, batchNumber)
+        const res = await store.getPlotList()
         if (res) dataTable.value = res
     } catch (error) {
         console.error(error)
@@ -52,32 +52,32 @@ onMounted(async () => {
 
 <template>
     <div class="container">
-        <el-button @click="() => router.back()" style="margin-bottom: 16px;">以前的</el-button>
+        <!-- <el-button @click="() => router.back()" style="margin-bottom: 16px;">以前的</el-button> -->
 
         <el-table v-if="dataTable.length > 0" :data="dataTable" stripe style="width: 100%"
             :header-cell-style="{ fontWeight: 'bold', backgroundColor: '#f5f7fa', color: '#333' }">
-            <el-table-column prop="materialCode" label="物料" width="120" sortable fixed="left" />
-            <el-table-column prop="rubberBatchCode" label="批次" width="120" sortable fixed="left" />
+            <el-table-column prop="materialCode" :label="$t('message.material')" width="140" sortable fixed="left" />
+            <el-table-column prop="rubberBatchCode" :label="$t('message.batch')" width="120" sortable fixed="left" />
             <el-table-column prop="excelFileName" label="EXCEL" show-overflow-tooltip />
             <el-table-column prop="jsonFileName" label="JSON" show-overflow-tooltip />
             <el-table-column prop="pdfFileName" label="PDF" show-overflow-tooltip />
-            <el-table-column prop="createTime" label="新增日期" width="180" sortable />
+            <el-table-column prop="createTime" :label="$t('message.createTime')" width="180" sortable />
 
-            <el-table-column label="操作" width="210">
+            <el-table-column :label="$t('message.operator')" width="360">
                 <template #default="slot">
                     <el-button :disabled="!slot.row.excelFileName"
-                        @click="handleDownload(slot.row.excelFileName, 'EXCEL')" type="primary" link size="small">
-                        下载excel
+                        @click="handleDownload(slot.row.excelFileName, 'EXCEL')" type="primary" size="small">
+                        {{ $t('message.download') }}excel
                     </el-button>
 
                     <el-button :disabled="!slot.row.jsonFileName" @click="handleDownload(slot.row.jsonFileName, 'JSON')"
-                        type="primary" link size="small">
-                        下载json
+                        type="primary" size="small">
+                        {{ $t('message.download') }}json
                     </el-button>
 
                     <el-button :disabled="!slot.row.pdfFileName" @click="handleViewPdf(slot.row.pdfFileName)"
-                        type="primary" link size="small">
-                        查看pdf
+                        type="primary" size="small">
+                        {{ $t('message.download') }}pdf
                     </el-button>
                 </template>
             </el-table-column>

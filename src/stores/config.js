@@ -10,7 +10,18 @@ export const useConfig = defineStore('useConfig', {
   },
   getters: {},
   actions: {
-    async getPlotList(materialCode, rubberBatch) {
+    async getPlotList() {
+      const endpoint = `${this.BASE_URL}/api/v1/mes/order/getPloitList`
+      try {
+        const response = await axios.get(endpoint)
+        if (response.status !== 200) return response.statusText
+        return response.data.data
+      } catch (error) {
+        console.error('getPlotList error:', error)
+        throw error
+      }
+    },
+    async getPlotListByParams(materialCode, rubberBatch) {
       const endpoint = `${this.BASE_URL}/api/v1/mes/order/getPloitList`
       console.log('materialCode -> ', materialCode)
       try {

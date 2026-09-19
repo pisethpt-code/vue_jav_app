@@ -39,6 +39,11 @@
     "alertComfirmResetMessage": "Are you sure you want to reset everything? Uploaded files will be cleared.",
     "cancel": "Cancel",
     "yes": "Yes",
-    "reseted": "Reset"
+    "reseted": "Reset",
+    "material": "Materials",
+    "batch": "Batch",
+    "createTime": "Date Added",
+    "operator": "Operators",
+    "download": "Download "
   }
 }

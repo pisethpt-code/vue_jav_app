@@ -9,7 +9,7 @@ const languese = {
 const i18n = createI18n({
   legacy: false,
   globalInjection: true,
-  locale: 'cn',
+  locale: localStorage.getItem('user-locale') || 'cn',
   fallbackLocale: 'cn',
   messages: {},
 })
