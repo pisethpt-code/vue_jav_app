@@ -8,6 +8,7 @@ import { useRouter } from 'vue-router'
 const store = useConfig()
 const { t } = useI18n()
 const router = useRouter()
+const isLoadData = ref(true);
 
 const materialCode = window.history.state?.materialCode || ''
 const batchNumber = window.history.state?.batchNumber || ''
@@ -41,11 +42,16 @@ const handleViewPdf = async (fileName) => {
 
 onMounted(async () => {
     try {
+        isLoadData.value = true
         const res = await store.getPlotList()
         if (res) dataTable.value = res
+
     } catch (error) {
         console.error(error)
         ElMessage.error(error?.message || 'Data retrieval failed')
+        isLoadData.value = false
+    } finally {
+        isLoadData.value = false
     }
 })
 </script>
@@ -54,7 +60,7 @@ onMounted(async () => {
     <div class="container">
         <!-- <el-button @click="() => router.back()" style="margin-bottom: 16px;">以前的</el-button> -->
 
-        <el-table v-if="dataTable.length > 0" :data="dataTable" stripe style="width: 100%"
+        <el-table v-loading="isLoadData" :data="dataTable" stripe style="width: 100%"
             :header-cell-style="{ fontWeight: 'bold', backgroundColor: '#f5f7fa', color: '#333' }">
             <el-table-column prop="materialCode" :label="$t('message.material')" width="140" sortable fixed="left" />
             <el-table-column prop="rubberBatchCode" :label="$t('message.batch')" width="120" sortable fixed="left" />
@@ -82,10 +88,6 @@ onMounted(async () => {
                 </template>
             </el-table-column>
         </el-table>
-
-        <div v-else class="content-center">
-            <el-empty />
-        </div>
     </div>
 </template>
 

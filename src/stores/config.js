@@ -3,7 +3,7 @@ import axios from 'axios'
 
 export const useConfig = defineStore('useConfig', {
   state: () => {
-    const BASE_URL = import.meta.env.VITE_API_URL || 'http://192.168.119.1:8080'
+    const BASE_URL = import.meta.env.VITE_API_URL || 'http://172.18.16.163:8080'
     return {
       BASE_URL,
     }
