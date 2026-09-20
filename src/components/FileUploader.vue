@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { useConfig } from '@/stores/config';
@@ -35,23 +35,6 @@ const fileInfo = reactive({
     extension: '',
     uploadTime: ''
 })
-
-const iconMap = {
-    xlsx: '📊',
-    xls: '📊',
-    json: '📄',
-    pdf: '📑',
-    default: '📊'
-}
-
-// const defaultIcon = computed(() => {
-//     const ext = props.formatText.toLowerCase()
-//     return iconMap[ext] || iconMap.default
-// })
-
-// const activeFileIcon = computed(() => {
-//     return iconMap[fileInfo.extension] || iconMap.default
-// })
 
 const formatSize = (bytes) => {
     if (bytes === 0) return '0 B'
@@ -106,14 +89,6 @@ const customUpload = async (options) => {
     fileInfo.size = formatSize(file.size)
 
     try {
-        const dataForm = {
-            materialCode: props.materialCode,
-            batchNumber: props.batchNumber,
-            file: file,
-        };
-
-        // console.log('customUpload -> data form: ' + JSON.stringify(dataForm));
-
         const data = await store.singleUploadFile(
             props.materialCode,
             props.batchNumber,
@@ -204,7 +179,6 @@ defineExpose({
 
             <el-upload ref="uploadRef" class="drag-uploader" drag action="#" :auto-upload="true" :show-file-list="false"
                 :accept="allowedExtensions" :http-request="customUpload" :before-upload="beforeUpload">
-                <!-- <div class="icon-wrapper">{{ defaultIcon }}</div> -->
                 <div class="upload-text">
                     {{ $t('message.dragInTextLabel') }} {{ formatText }} {{ $t('message.fileOrTextLabel') }} <span
                         class="blue-text text-blue-underline">{{ $t('message.clickToUpload') }} {{ formatText }} {{
@@ -224,7 +198,6 @@ defineExpose({
 
             <div class="file-info-body">
                 <div class="file-name-row">
-                    <span class="file-icon">{{ activeFileIcon }}</span>
                     <span class="file-name">{{ fileInfo.name }}</span>
                 </div>
                 <div class="file-meta">{{ $t('message.fileSize') }} {{ fileInfo.size }}</div>
@@ -254,14 +227,13 @@ defineExpose({
                 </div>
 
                 <div class="right-actions">
-                    <!-- <span>{{ currentRecordId }}</span> -->
                     <el-upload action="#" :show-file-list="false" :accept="allowedExtensions"
                         :http-request="customUpload" :before-upload="beforeUpload" style="display: inline-block;">
                         <el-button size="small">{{ $t('message.reUpload') }}</el-button>
                     </el-upload>
                     <el-button size="small" @click="handleDelete(true)" type="danger" plain>{{
                         $t('message.delete')
-                    }}</el-button>
+                        }}</el-button>
                 </div>
             </div>
         </div>
