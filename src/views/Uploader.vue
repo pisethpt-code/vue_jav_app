@@ -22,6 +22,10 @@ const filesUploaded = reactive({
     pdf: null
 })
 
+const excelCurrentRecordId = ref(0);
+const jsonCurrentRecordId = ref(0);
+const pdfCurrentRecordId = ref(0);
+
 const handleGetLandParcelList = async () => {
     ElMessage({
         message: t('message.onpenPlotListMessage'),
@@ -39,8 +43,7 @@ const handleGetLandParcelList = async () => {
 
 const handleRefresh = () => {
     ElMessage.primary(t('message.refreshPageMessage'))
-
-    // window.location.reload()
+    window.location.reload()
 }
 
 const handleSubmit = async () => {
@@ -177,31 +180,31 @@ const handleFileUploadChange = (type, payload) => {
             <FileUploader :ref="setUploaderRef" @upload-success="(data) => handleFileUploadChange('excel', data)"
                 @file-deleted="() => handleFileUploadChange('excel', null)" :label-text="$t('message.excelTextLabel')"
                 format-text="EXCEL" allowed-extensions=".xlsx,.xls" allowed-types-text=".xlsx / .xls"
-                :material-code="materialCode" :batch-number="batchNumber" />
+                :material-code="materialCode" :batch-number="batchNumber" :current-record-id="excelCurrentRecordId" />
 
             <!-- json accept file-->
             <FileUploader class="margin-top" :ref="setUploaderRef"
                 @upload-success="(data) => handleFileUploadChange('json', data)"
                 @file-deleted="() => handleFileUploadChange('json', null)" :label-text="$t('message.jsonTextLabel')"
                 format-text="JSON" allowed-extensions=".json" allowed-types-text=".json" :max-size-m-b="5"
-                :material-code="materialCode" :batch-number="batchNumber" />
+                :material-code="materialCode" :batch-number="batchNumber" :current-record-id="jsonCurrentRecordId" />
 
             <!-- pdf accept file -->
             <FileUploader class="margin-top" :ref="setUploaderRef"
                 @upload-success="(data) => handleFileUploadChange('pdf', data)"
                 @file-deleted="() => handleFileUploadChange('pdf', null)" :label-text="$t('message.pdfTextLable')"
                 format-text="PDF" allowed-extensions=".pdf" allowed-types-text=".pdf" :max-size-m-b="20"
-                :material-code="materialCode" :batch-number="batchNumber" />
+                :material-code="materialCode" :batch-number="batchNumber" :current-record-id="pdfCurrentRecordId" />
         </el-card>
 
         <!-- action buttons -->
-        <el-card class="card-background">
+        <!-- <el-card class="card-background">
             <div
                 style="display: flex !important; flex-direction: row !important; gap: 5px; justify-content: center !important;">
                 <el-button @click="handleResetAll">{{ $t('message.reset') }}</el-button>
                 <el-button @click="handleSubmit" type="primary">{{ $t('message.submit') }}</el-button>
             </div>
-        </el-card>
+        </el-card> -->
     </div>
 </template>
 

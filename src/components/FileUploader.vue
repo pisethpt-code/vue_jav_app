@@ -20,13 +20,14 @@ const props = defineProps({
     batchNumber: {
         type: String,
         default: '',
-    }
+    },
 })
 
-const emit = defineEmits(['upload-success', 'file-deleted'])
+const emit = defineEmits(['upload-success', 'file-deleted', 'update:currentRecordId'])
 
 const uploadStatus = ref('idle')
 const uploadProgress = ref(0)
+const currentRecordId = ref(0);
 
 const fileInfo = reactive({
     name: '',
@@ -43,14 +44,14 @@ const iconMap = {
     default: '📊'
 }
 
-const defaultIcon = computed(() => {
-    const ext = props.formatText.toLowerCase()
-    return iconMap[ext] || iconMap.default
-})
+// const defaultIcon = computed(() => {
+//     const ext = props.formatText.toLowerCase()
+//     return iconMap[ext] || iconMap.default
+// })
 
-const activeFileIcon = computed(() => {
-    return iconMap[fileInfo.extension] || iconMap.default
-})
+// const activeFileIcon = computed(() => {
+//     return iconMap[fileInfo.extension] || iconMap.default
+// })
 
 const formatSize = (bytes) => {
     if (bytes === 0) return '0 B'
@@ -111,14 +112,13 @@ const customUpload = async (options) => {
             file: file,
         };
 
-        console.log('customUpload -> data form: ' + JSON.stringify(dataForm));
+        // console.log('customUpload -> data form: ' + JSON.stringify(dataForm));
 
         const data = await store.singleUploadFile(
             props.materialCode,
             props.batchNumber,
             file
         )
-        console.log('response: ' + data);
 
         const isNumeric = /^\d+$/.test(String(data).trim());
         const rowCount = isNumeric ? parseInt(data, 10) : 0;
@@ -127,6 +127,9 @@ const customUpload = async (options) => {
             const errorMessage = !isNumeric ? data : t('message.fileUploadedFailedMessage');
             throw new Error(errorMessage);
         }
+        currentRecordId.value = data
+        emit('update:currentRecordId', currentRecordId)
+        // console.log('response: ' + currentRecordId.value)
 
         const interval = setInterval(() => {
             if (uploadProgress.value < 90) {
@@ -158,20 +161,29 @@ const customUpload = async (options) => {
 }
 
 // Reset state
-const handleDelete = (isShowMessage = true) => {
-    if (isShowMessage)
-        ElMessage({
-            message: t('message.deletedFileMessage'),
-            type: 'warning'
-        })
+const handleDelete = async (isShowMessage = true) => {
+    try {
+        // console.log('current record id -> ', currentRecordId.value);
+        if (currentRecordId.value == 0) return
+        const response = await store.deleteSingleFileUploaded(currentRecordId.value);
+        if (response) {
+            if (isShowMessage)
+                ElMessage({
+                    message: t('message.deletedFileMessage'),
+                    type: 'warning'
+                })
 
-    uploadStatus.value = 'idle'
-    uploadProgress.value = 0
-    fileInfo.name = ''
-    fileInfo.size = ''
-    fileInfo.extension = ''
-    fileInfo.uploadTime = ''
-    emit('file-deleted')
+            uploadStatus.value = 'idle'
+            uploadProgress.value = 0
+            fileInfo.name = ''
+            fileInfo.size = ''
+            fileInfo.extension = ''
+            fileInfo.uploadTime = ''
+            emit('file-deleted')
+        }
+    } catch (error) {
+
+    }
 }
 
 defineExpose({
@@ -188,7 +200,7 @@ defineExpose({
 
             <el-upload ref="uploadRef" class="drag-uploader" drag action="#" :auto-upload="true" :show-file-list="false"
                 :accept="allowedExtensions" :http-request="customUpload" :before-upload="beforeUpload">
-                <div class="icon-wrapper">{{ defaultIcon }}</div>
+                <!-- <div class="icon-wrapper">{{ defaultIcon }}</div> -->
                 <div class="upload-text">
                     {{ $t('message.dragInTextLabel') }} {{ formatText }} {{ $t('message.fileOrTextLabel') }} <span
                         class="blue-text text-blue-underline">{{ $t('message.clickToUpload') }} {{ formatText }} {{
@@ -238,12 +250,14 @@ defineExpose({
                 </div>
 
                 <div class="right-actions">
+                    <span>{{ currentRecordId }}</span>
                     <el-upload action="#" :show-file-list="false" :accept="allowedExtensions"
                         :http-request="customUpload" :before-upload="beforeUpload" style="display: inline-block;">
                         <el-button size="small">{{ $t('message.reUpload') }}</el-button>
                     </el-upload>
-                    <el-button size="small" @click="handleDelete" type="danger" plain>{{ $t('message.delete')
-                        }}</el-button>
+                    <el-button size="small" @click="handleDelete(true)" type="danger" plain>{{
+                        $t('message.delete')
+                    }}</el-button>
                 </div>
             </div>
         </div>

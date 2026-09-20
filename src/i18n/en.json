@@ -44,6 +44,11 @@
     "batch": "Batch",
     "createTime": "Date Added",
     "operator": "Operators",
-    "download": "Download "
+    "download": "Download ",
+    "downloadingFileMessage": "Downloading file...",
+    "downloadSuccessMessage": "Download successful.",
+    "downloadFileFailedMessage": "File download failed; please try again.",
+    "loadingPdf": "Loading PDF...",
+    "failedLoadPdf": "Failed to load PDF file."
   }
 }

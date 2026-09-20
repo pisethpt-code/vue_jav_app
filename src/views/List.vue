@@ -16,25 +16,25 @@ const batchNumber = window.history.state?.batchNumber || ''
 const dataTable = ref([])
 
 const handleDownload = async (fileName, type) => {
-    const loadingInstance = ElLoading.service({ text: '正在下载文件...' })
+    const loadingInstance = ElLoading.service({ text: t('message.downloadingFileMessage') })
     try {
         await store.downloadFile(fileName)
-        ElMessage.success(type + '下载成功')
+        ElMessage.success(type + t('message.downloadSuccessMessage'))
     } catch (error) {
         console.error(error)
-        ElMessage.error('文件下载失败，请重试')
+        ElMessage.error(t('message.downloadFileFailedMessage'))
     } finally {
         loadingInstance.close()
     }
 }
 
 const handleViewPdf = async (fileName) => {
-    const loadingInstance = ElLoading.service({ text: '正在加载 PDF...' })
+    const loadingInstance = ElLoading.service({ text: t('message.loadingPdf') })
     try {
         await store.viewPdfFile(fileName)
     } catch (error) {
         console.error(error)
-        ElMessage.error('PDF 文件加载失败')
+        ElMessage.error(t('message.failedLoadPdf'))
     } finally {
         loadingInstance.close()
     }

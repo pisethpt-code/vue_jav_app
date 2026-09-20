@@ -72,6 +72,24 @@ export const useConfig = defineStore('useConfig', {
         throw error
       }
     },
+    async deleteSingleFileUploaded(recordId) {
+      try {
+        if (recordId == null || recordId == '') return
+
+        const endpoint = `${this.BASE_URL}/api/v1/mes/order/deleteFileRecorded`
+        const response = await axios.delete(endpoint, {
+          params: {
+            recordId: recordId,
+          },
+        })
+
+        if (response.status !== 200) return response.statusText
+        return response.data
+      } catch (error) {
+        console.error('singleUploadFile error:', error)
+        throw error
+      }
+    },
     async downloadFile(fileName) {
       const response = await axios.get(`${this.BASE_URL}/api/v1/mes/order/download/${fileName}`, {
         responseType: 'blob',

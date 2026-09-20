@@ -44,6 +44,11 @@
     "batch": "批次",
     "createTime": "新增日期",
     "operator": "操作",
-    "download": "下载"
+    "download": "下载",
+    "downloadingFileMessage": "正在下载文件...",
+    "downloadSuccessMessage": "下载成功",
+    "downloadFileFailedMessage": "文件下载失败，请重试",
+    "loadingPdf": "正在加载 PDF...",
+    "failedLoadPdf": "PDF 文件加载失败"
   }
 }

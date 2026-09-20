@@ -44,6 +44,11 @@
     "batch": "លេខបាច់",
     "createTime": "បន្ថែមកាលបរិច្ឆេទ",
     "operator": "ប្រតិបត្តិការ",
-    "download": "ទាញយក "
+    "download": "ទាញយក ",
+    "downloadingFileMessage": "កំពុងទាញយកឯកសារ...",
+    "downloadSuccessMessage": "ការទាញយកបានជោគជ័យ",
+    "downloadFileFailedMessage": "ការទាញយកឯកសារបានបរាជ័យ សូមព្យាយាមម្តងទៀត",
+    "loadingPdf": "កំពុងផ្ទុកឯកសារ PDF...",
+    "failedLoadPdf": "បរាជ័យក្នុងការផ្ទុកឯកសារ PDF"
   }
 }
