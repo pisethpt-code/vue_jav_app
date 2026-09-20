@@ -21,7 +21,7 @@ export default defineConfig({
     }),
     ElementPlus(),
   ],
-  base: '/vue_jav_app/',
+  base: '/webapp/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
