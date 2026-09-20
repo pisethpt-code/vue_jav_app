@@ -49,6 +49,8 @@
     "downloadSuccessMessage": "下载成功",
     "downloadFileFailedMessage": "文件下载失败，请重试",
     "loadingPdf": "正在加载 PDF...",
-    "failedLoadPdf": "PDF 文件加载失败"
+    "failedLoadPdf": "PDF 文件加载失败",
+    "searchLabel": "搜索物料或批次",
+    "searchPlaceholder": "输入物料或批次"
   }
 }

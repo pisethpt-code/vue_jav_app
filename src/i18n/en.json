@@ -49,6 +49,8 @@
     "downloadSuccessMessage": "Download successful.",
     "downloadFileFailedMessage": "File download failed; please try again.",
     "loadingPdf": "Loading PDF...",
-    "failedLoadPdf": "Failed to load PDF file."
+    "failedLoadPdf": "Failed to load PDF file.",
+    "searchLabel": "Search for materials or batches",
+    "searchPlaceholder": "Enter material or batch"
   }
 }

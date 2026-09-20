@@ -125,7 +125,6 @@ const handleFileUploadChange = (type, payload) => {
 
 <template>
     <div style="display: flex; flex-direction: column; margin: 15px; gap: 10px;">
-
         <!-- main buttons -->
         <el-card>
             <div style="display: flex; justify-content: space-between;">
@@ -153,7 +152,7 @@ const handleFileUploadChange = (type, payload) => {
                 <div
                     style="display: flex; flex-wrap: wrap; flex-direction: row; gap: 10px; align-items: center !important;">
                     <label for="materialCode"><em style="color: red !important;">* </em>{{ $t('message.materialCode')
-                        }}:</label>
+                    }}:</label>
                     <el-input v-model="materialCode" style="width: 240px;"
                         :placeholder="$t('message.materCodePlaceholder')" />
                 </div>
@@ -161,7 +160,7 @@ const handleFileUploadChange = (type, payload) => {
                 <div
                     style="display: flex; flex-wrap: wrap; flex-direction: row; gap: 10px; align-items: center !important;">
                     <label for="batchNumber"><em style="color: red !important;">* </em>{{ $t('message.rubberBatch')
-                        }}:</label>
+                    }}:</label>
                     <el-input v-model="batchNumber" style="width: 240px"
                         :placeholder="$t('message.rubberBatchPlaceholder')" />
                 </div>

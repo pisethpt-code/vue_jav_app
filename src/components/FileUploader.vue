@@ -182,7 +182,11 @@ const handleDelete = async (isShowMessage = true) => {
             emit('file-deleted')
         }
     } catch (error) {
-
+        console.error(error)
+        ElMessage({
+            message: error,
+            type: 'error'
+        })
     }
 }
 
@@ -257,7 +261,7 @@ defineExpose({
                     </el-upload>
                     <el-button size="small" @click="handleDelete(true)" type="danger" plain>{{
                         $t('message.delete')
-                    }}</el-button>
+                        }}</el-button>
                 </div>
             </div>
         </div>

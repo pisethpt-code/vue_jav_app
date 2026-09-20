@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useConfig } from '@/stores/config'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElLoading } from 'element-plus'
@@ -9,6 +9,7 @@ const store = useConfig()
 const { t } = useI18n()
 const router = useRouter()
 const isLoadData = ref(true);
+const search = ref('');
 
 const materialCode = window.history.state?.materialCode || ''
 const batchNumber = window.history.state?.batchNumber || ''
@@ -54,13 +55,30 @@ onMounted(async () => {
         isLoadData.value = false
     }
 })
+
+const dataFilterTable = computed(() => {
+    if (!dataTable.value) return []
+
+    const query = search.value.toLowerCase()
+    if (!query) return dataTable.value
+
+    return dataTable.value.filter((data) =>
+        data.materialCode?.toLowerCase().includes(query) ||
+        data.rubberBatchCode?.toLowerCase().includes(query)
+    )
+})
 </script>
 
 <template>
     <div class="container">
         <!-- <el-button @click="() => router.back()" style="margin-bottom: 16px;">以前的</el-button> -->
-
-        <el-table v-loading="isLoadData" :data="dataTable" stripe style="width: 100%"
+        <div
+            style="display: flex; flex-wrap: wrap; flex-direction: row; gap: 10px; align-items: center !important; margin: 5px 0;">
+            <label for="materialCode" style="color: #333;">{{ $t('message.searchLabel') }}:</label>
+            <el-input v-model="search" style="width: 240px;" :placeholder="$t('message.searchPlaceholder')"
+                :clearable="true" />
+        </div>
+        <el-table v-loading="isLoadData" :data="dataFilterTable" stripe style="width: 100%"
             :header-cell-style="{ fontWeight: 'bold', backgroundColor: '#f5f7fa', color: '#333' }">
             <el-table-column prop="materialCode" :label="$t('message.material')" width="140" sortable fixed="left" />
             <el-table-column prop="rubberBatchCode" :label="$t('message.batch')" width="120" sortable fixed="left" />

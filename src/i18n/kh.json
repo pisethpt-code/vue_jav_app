@@ -49,6 +49,8 @@
     "downloadSuccessMessage": "ការទាញយកបានជោគជ័យ",
     "downloadFileFailedMessage": "ការទាញយកឯកសារបានបរាជ័យ សូមព្យាយាមម្តងទៀត",
     "loadingPdf": "កំពុងផ្ទុកឯកសារ PDF...",
-    "failedLoadPdf": "បរាជ័យក្នុងការផ្ទុកឯកសារ PDF"
+    "failedLoadPdf": "បរាជ័យក្នុងការផ្ទុកឯកសារ PDF",
+    "searchLabel": "ស្វែងរកវត្ថុធាតុដើម ឬក្រុមផលិតផល",
+    "searchPlaceholder": "បញ្ចូលសម្ភារៈ ឬបាច់"
   }
 }
