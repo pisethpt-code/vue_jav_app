@@ -254,14 +254,14 @@ defineExpose({
                 </div>
 
                 <div class="right-actions">
-                    <span>{{ currentRecordId }}</span>
+                    <!-- <span>{{ currentRecordId }}</span> -->
                     <el-upload action="#" :show-file-list="false" :accept="allowedExtensions"
                         :http-request="customUpload" :before-upload="beforeUpload" style="display: inline-block;">
                         <el-button size="small">{{ $t('message.reUpload') }}</el-button>
                     </el-upload>
                     <el-button size="small" @click="handleDelete(true)" type="danger" plain>{{
                         $t('message.delete')
-                        }}</el-button>
+                    }}</el-button>
                 </div>
             </div>
         </div>
