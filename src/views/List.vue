@@ -82,25 +82,26 @@ const dataFilterTable = computed(() => {
             :header-cell-style="{ fontWeight: 'bold', backgroundColor: '#f5f7fa', color: '#333' }">
             <el-table-column prop="materialCode" :label="$t('message.material')" width="140" sortable fixed="left" />
             <el-table-column prop="rubberBatchCode" :label="$t('message.batch')" width="120" sortable fixed="left" />
-            <el-table-column prop="excelFileName" label="EXCEL" show-overflow-tooltip />
-            <el-table-column prop="jsonFileName" label="JSON" show-overflow-tooltip />
-            <el-table-column prop="pdfFileName" label="PDF" show-overflow-tooltip />
+            <el-table-column prop="excelFileName" label="EXCEL" show-overflow-tooltip min-width="150" />
+            <el-table-column prop="jsonFileName" label="JSON" show-overflow-tooltip min-width="150" />
+            <el-table-column prop="pdfFileName" label="PDF" show-overflow-tooltip min-width="150" />
             <el-table-column prop="createTime" :label="$t('message.createTime')" width="180" sortable />
 
-            <el-table-column :label="$t('message.operator')" width="360">
+            <el-table-column :label="$t('message.operator')" width="380">
                 <template #default="slot">
                     <el-button :disabled="!slot.row.excelFileName"
-                        @click="handleDownload(slot.row.excelFileName, 'EXCEL')" type="primary" size="small">
+                        @click="handleDownload(slot.row.excelFileName, 'EXCEL')"
+                        :type="!slot.row.excelFileName ? 'link' : 'primary'" size="small">
                         {{ $t('message.download') }}excel
                     </el-button>
 
                     <el-button :disabled="!slot.row.jsonFileName" @click="handleDownload(slot.row.jsonFileName, 'JSON')"
-                        type="primary" size="small">
+                        :type="!slot.row.jsonFileName ? 'link' : 'primary'" size="small">
                         {{ $t('message.download') }}json
                     </el-button>
 
                     <el-button :disabled="!slot.row.pdfFileName" @click="handleViewPdf(slot.row.pdfFileName)"
-                        type="primary" size="small">
+                        :type="!slot.row.pdfFileName ? 'link' : 'primary'" size="small">
                         {{ $t('message.download') }}pdf
                     </el-button>
                 </template>
