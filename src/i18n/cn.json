@@ -2,9 +2,9 @@
   "message": {
     "loadData": "地块列表",
     "refresh": "刷新",
-    "materialCode": "物料编码",
+    "materialCode": "物料编码:",
     "materCodePlaceholder": "请输入物料编码",
-    "rubberBatch": "天然胶批次",
+    "rubberBatch": "天然胶批次:",
     "rubberBatchPlaceholder": "请输入批次号",
     "fileUpload": "文件上传",
     "excelTextLabel": "地块信息EXCEL",

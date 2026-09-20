@@ -2,9 +2,9 @@
   "message": {
     "loadData": "Query Data",
     "refresh": "Refresh",
-    "materialCode": "Material Code",
+    "materialCode": "Material Code:",
     "materCodePlaceholder": "Please enter the material code",
-    "rubberBatch": "Rubber Batch",
+    "rubberBatch": "Rubber Batch:",
     "rubberBatchPlaceholder": "Please enter the batch number",
     "fileUpload": "File Upload",
     "excelTextLabel": "EXCEL file",
