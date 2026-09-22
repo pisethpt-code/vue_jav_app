@@ -8,6 +8,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'upload',
+      props: (route) => ({ matno: route.query.matno, batch: route.query.batch }),
       component: Uploader,
     },
     {

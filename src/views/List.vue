@@ -3,16 +3,11 @@ import { ref, onMounted, computed } from 'vue'
 import { useConfig } from '@/stores/config'
 import { useI18n } from 'vue-i18n'
 import { ElMessage, ElLoading } from 'element-plus'
-import { useRouter } from 'vue-router'
 
 const store = useConfig()
 const { t } = useI18n()
-const router = useRouter()
 const isLoadData = ref(true);
 const search = ref('');
-
-const materialCode = window.history.state?.materialCode || ''
-const batchNumber = window.history.state?.batchNumber || ''
 
 const dataTable = ref([])
 

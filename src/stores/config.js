@@ -3,7 +3,7 @@ import axios from 'axios'
 
 export const useConfig = defineStore('useConfig', {
   state: () => {
-    const BASE_URL = import.meta.env.VITE_API_URL || 'http://172.18.16.163:8080'
+    const BASE_URL = import.meta.env.VITE_API_URL || 'http://172.19.154.195:8080'
     return {
       BASE_URL,
     }
@@ -69,6 +69,33 @@ export const useConfig = defineStore('useConfig', {
         return response.data
       } catch (error) {
         console.error('singleUploadFile error:', error)
+        throw error
+      }
+    },
+    async uploadFiles(fileRecords) {
+      try {
+        const formData = new FormData()
+
+        const metadataList = fileRecords.map((record) => ({
+          materialNo: record.materialCode,
+          batchNo: record.batchNumber,
+        }))
+
+        const jsonBlob = new Blob([JSON.stringify(metadataList)], {
+          type: 'application/json',
+        })
+        formData.append('dataObj', jsonBlob)
+
+        fileRecords.forEach((record) => {
+          const rawFile = record.file?.raw || record.file
+          formData.append('files', rawFile)
+        })
+
+        const endpoint = `${this.BASE_URL}/api/v1/mes/order/uploads`
+        const response = await axios.post(endpoint, formData)
+        return response.data
+      } catch (error) {
+        console.error('uploadFiles error:', error)
         throw error
       }
     },

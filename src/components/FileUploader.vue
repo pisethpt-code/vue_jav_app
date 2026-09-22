@@ -41,7 +41,11 @@ const formatSize = (bytes) => {
     const k = 1024
     const sizes = ['B', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+    const fileSize = {
+        size: parseFloat((bytes / Math.pow(k, i)).toFixed(2)) || 0,
+        type: sizes[i] || null
+    }
+    return fileSize
 }
 
 const formatCurrentTime = () => {
@@ -83,28 +87,29 @@ const beforeUpload = (rawFile) => {
 const customUpload = async (options) => {
     const { file } = options
 
+    const fileFormate = formatSize(file.size);
     uploadStatus.value = 'uploading'
     uploadProgress.value = 0
     fileInfo.name = file.name
-    fileInfo.size = formatSize(file.size)
+    fileInfo.size = fileFormate.size + " " + fileFormate.type;
 
     try {
-        const data = await store.singleUploadFile(
-            props.materialCode,
-            props.batchNumber,
-            file
-        )
+        // const data = await store.singleUploadFile(
+        //     props.materialCode,
+        //     props.batchNumber,
+        //     file
+        // )
 
-        const isNumeric = /^\d+$/.test(String(data).trim());
-        const rowCount = isNumeric ? parseInt(data, 10) : 0;
+        // const isNumeric = /^\d+$/.test(String(data).trim());
+        // const rowCount = isNumeric ? parseInt(data, 10) : 0;
 
-        if (!isNumeric || rowCount <= 0) {
-            const errorMessage = !isNumeric ? data : t('message.fileUploadedFailedMessage');
-            throw new Error(errorMessage);
-        }
-        currentRecordId.value = data
-        emit('update:currentRecordId', currentRecordId)
-        // console.log('response: ' + currentRecordId.value)
+        // if (!isNumeric || rowCount <= 0) {
+        //     const errorMessage = !isNumeric ? data : t('message.fileUploadedFailedMessage');
+        //     throw new Error(errorMessage);
+        // }
+        // currentRecordId.value = data
+        // emit('update:currentRecordId', currentRecordId)
+        // console.log('response: ' + JSON.stringify(fileFormate))
 
         const interval = setInterval(() => {
             if (uploadProgress.value < 90) {
@@ -139,23 +144,38 @@ const customUpload = async (options) => {
 const handleDelete = async (isShowMessage = true) => {
     try {
         // console.log('current record id -> ', currentRecordId.value);
-        if (currentRecordId.value == 0) return
-        const response = await store.deleteSingleFileUploaded(currentRecordId.value);
-        if (response) {
-            if (isShowMessage)
-                ElMessage({
-                    message: t('message.deletedFileMessage'),
-                    type: 'warning'
-                })
+        // if (currentRecordId.value == 0) return
+        // const response = await store.deleteSingleFileUploaded(currentRecordId.value);
+        // if (response) {
+        //     if (isShowMessage)
+        //         ElMessage({
+        //             message: t('message.deletedFileMessage'),
+        //             type: 'warning'
+        //         })
 
-            uploadStatus.value = 'idle'
-            uploadProgress.value = 0
-            fileInfo.name = ''
-            fileInfo.size = ''
-            fileInfo.extension = ''
-            fileInfo.uploadTime = ''
-            emit('file-deleted')
-        }
+        //     uploadStatus.value = 'idle'
+        //     uploadProgress.value = 0
+        //     fileInfo.name = ''
+        //     fileInfo.size = ''
+        //     fileInfo.extension = ''
+        //     fileInfo.uploadTime = ''
+        //     emit('file-deleted')
+        // }
+
+        if (isShowMessage)
+            ElMessage({
+                message: t('message.deletedFileMessage'),
+                type: 'warning'
+            })
+
+        uploadStatus.value = 'idle'
+        uploadProgress.value = 0
+        fileInfo.name = ''
+        fileInfo.size = ''
+        fileInfo.extension = ''
+        fileInfo.uploadTime = ''
+        emit('file-deleted')
+
     } catch (error) {
         console.error(error)
         ElMessage({
@@ -198,7 +218,7 @@ defineExpose({
 
             <div class="file-info-body">
                 <div class="file-name-row">
-                    <span class="file-name">{{ fileInfo.name }}</span>
+                    <span class="file-name word-break">{{ fileInfo.name }}</span>
                 </div>
                 <div class="file-meta">{{ $t('message.fileSize') }} {{ fileInfo.size }}</div>
 
@@ -217,8 +237,8 @@ defineExpose({
             <div class="success-body">
                 <div class="left-info">
                     <div class="file-name-row">
-                        <span class="file-icon">{{ activeFileIcon }}</span>
-                        <span class="file-name">{{ fileInfo.name }}</span>
+                        <!-- <span class="file-icon">{{ activeFileIcon }}</span> -->
+                        <span class="file-name word-break">{{ fileInfo.name }}</span>
                     </div>
                     <div class="file-meta">
                         {{ $t('message.fileSize') }} {{ fileInfo.size }} &nbsp;&nbsp;&nbsp;&nbsp; {{
@@ -233,7 +253,7 @@ defineExpose({
                     </el-upload>
                     <el-button size="small" @click="handleDelete(true)" type="danger" plain>{{
                         $t('message.delete')
-                        }}</el-button>
+                    }}</el-button>
                 </div>
             </div>
         </div>
@@ -243,6 +263,10 @@ defineExpose({
 </template>
 
 <style scoped>
+.word-break {
+    word-break: break-all;
+}
+
 .custom-upload-container {
     width: 100%;
     /* max-width: 650px; */
